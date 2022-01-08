@@ -18,7 +18,7 @@ import Spinner from "../spinner/Spinner";
 
 const HeroesList = () => {
 
-	//работа с двумяредьюсерами с помощью библиотеки reselect
+	//работа с двумяредьюсерами с помощью библиотеки reselect. Для предотвращения лишних рендеров, если стейт не меняется
 	const filteredHeroesSelector = createSelector(
 		(state) => state.filters.activeFilter,
 		state => state.heroes.heroes,
