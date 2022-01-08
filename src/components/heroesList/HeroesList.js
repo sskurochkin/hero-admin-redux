@@ -1,7 +1,7 @@
 import { useHttp } from "../../hooks/http.hook";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import {createSelector} from 'reselect'
 import {
 	heroesFetching,
 	heroesFetched,
@@ -17,7 +17,37 @@ import Spinner from "../spinner/Spinner";
 // Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
-	const { filteredHeroes, heroesLoadingStatus } = useSelector((state) => state); //достали занчения из стейта
+
+	//работа с двумяредьюсерами с помощью библиотеки reselect
+	const filteredHeroesSelector = createSelector(
+		(state) => state.filters.activeFilter,
+		state => state.heroes.heroes,
+		(filter, heroes) => {
+			if(filter === 'all'){
+				return heroes
+			} else {
+				return heroes.filter(hero => hero.element === filter)
+			}
+		}
+	)
+	
+	//продвинутый вариант реализации фильтров
+
+	// const filteredHeroes = useSelector(state=> {
+	// 	if(state.filters.activeFilter === 'all'){
+	// 		return state.heroes.heroes
+	// 	} else {
+	// 		return state.heroes.heroes.filter(hero => hero.element === state.filters.activeFilter)
+	// 	}
+
+	// });
+
+
+	const filteredHeroes = useSelector(filteredHeroesSelector)
+	const heroesLoadingStatus = useSelector((state) => state.filters.heroesLoadingStatus);
+
+
+	// const { filteredHeroes, heroesLoadingStatus } = useSelector((state) => state); //достали занчения из стейта
 	const dispatch = useDispatch();
 	const { request } = useHttp();
 
@@ -33,11 +63,11 @@ const HeroesList = () => {
 	// Функция берет id и по нему удаляет ненужного персонажа из store
 	// ТОЛЬКО если запрос на удаление прошел успешно
 	// Отслеживайте цепочку действий actions => reducers
-	const deleteHero = useCallback(
+	const deleteHero = useCallback(  // нужно обязательно обернуть в хук, для того чтобы компонент не перерисовывался и передать его дочернему компоненту
 		(id) => {
 			// Удаление персонажа по его id
 			request(`http://localhost:3001/heroes/${id}`, "DELETE")
-				.then((data) => console.log(data, "Deleted"))
+				.then((data) => console.log(data, "Deleted")) // можно и без этой строки
 				.then(dispatch(heroDelete(id)))
 				.catch((err) => console.log(err));
 			

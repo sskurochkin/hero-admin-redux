@@ -15,13 +15,15 @@ import { useHttp } from "../../hooks/http.hook";
 import {v4 as uuidv4} from 'uuid'
 
 const HeroesAddForm = () => {
+
+	//создаем локальный стейт для формирования объекта героя
 	const [heroName, setHeroName] = useState("");
 	const [heroDescr, setHeroDescr] = useState("");
 	const [heroElement, setHeroElement] = useState("");
 
 	const dispatch = useDispatch();
 	const { request } = useHttp();
-	const { filters, filtersLoadingStatus, heroes } = useSelector((state) => state);
+	const { filters, filtersLoadingStatus } = useSelector((state) => state.filters);
 
 	const onSubmitHandler = (e) => {
         e.preventDefault()

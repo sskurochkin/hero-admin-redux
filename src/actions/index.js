@@ -43,10 +43,6 @@ export const activeFilterChanged = (filter) => {
     }
 }
 
-
-
-
-
 export const heroCreate = (newHero) => {
     return {
         type: 'HERO_CREATE',
