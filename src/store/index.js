@@ -45,6 +45,8 @@ const enhancer =
 // 	)
 // );
 
+
+//Redux toolkit
 const store = configureStore({
 	reducer: {heroes, filters},
 	middleware: getDefaultMiddleware => getDefaultMiddleware().concat(stringMiddleware),
