@@ -13,10 +13,10 @@
       "element": "wind"
     },
     {
-      "id": 3,
-      "name": "Морской герой",
-      "description": "Как аквамен, но не из DC",
-      "element": "water"
+      "id": "972a14e3-9241-4929-b250-134e04772d28",
+      "name": "Игорь",
+      "description": "sdcsd",
+      "element": ""
     }
   ],
   "filters": [

@@ -1,11 +1,7 @@
-import { createStore, combineReducers, compose, applyMiddleware } from "redux";
-// import reducer from '../reducers';
-
 //redux-thunk используетсвя для того чтобы передавать в диспатч функции и их обрабатывать
-
-import ReduxThunk from "redux-thunk";
 import heroes from "../reducers/heroes";
 import filters from "../reducers/filters";
+import {configureStore, getDefaultMiddleware} from '@reduxjs/toolkit'
 
 //Middleware - функции по изменению функционала и работы  диспатча, позволяют в качестве action принимать не только объекты
 const stringMiddleware = () => (next) => (action) => {
@@ -35,18 +31,27 @@ const enhancer =
 	};
 
 // const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-const store = createStore(
-	combineReducers({ heroes: heroes, filters: filters }),
-	compose(
-		applyMiddleware(ReduxThunk, stringMiddleware),
-		window.__REDUX_DEVTOOLS_EXTENSION__ &&
-			window.__REDUX_DEVTOOLS_EXTENSION__()
+// const store = createStore(
+// 	combineReducers({ heroes: heroes, filters: filters }),
+// 	compose(
+// 		applyMiddleware(ReduxThunk, stringMiddleware),
+// 		window.__REDUX_DEVTOOLS_EXTENSION__ &&
+// 			window.__REDUX_DEVTOOLS_EXTENSION__()
 		// compose(
 		// 	enhancer,
 		// 	window.__REDUX_DEVTOOLS_EXTENSION__ &&
 		// 		window.__REDUX_DEVTOOLS_EXTENSION__()
-		// )
-	)
-);
+// 		// )
+// 	)
+// );
+
+const store = configureStore({
+	reducer: {heroes, filters},
+	middleware: getDefaultMiddleware => getDefaultMiddleware().concat(stringMiddleware),
+	devTools: process.env.NODE_ENV !== 'production',//включение devtools только для разработки
+
+})
+
+
 
 export default store;
