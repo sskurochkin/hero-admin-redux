@@ -1,6 +1,8 @@
 //redux-thunk используетсвя для того чтобы передавать в диспатч функции и их обрабатывать
-import heroes from "../reducers/heroes";
-import filters from "../reducers/filters";
+// import heroes from "../reducers/heroes"; //раздельный редьюсер
+import heroes from '../components/heroesList/heroesSlice'//редьюсер из функции createSlice()
+// import filters from "../reducers/filters";
+import filters from '../components/heroesFilters/filtersSlice'//редьюсер из функции createSlice()
 import {configureStore, getDefaultMiddleware} from '@reduxjs/toolkit'
 
 //Middleware - функции по изменению функционала и работы  диспатча, позволяют в качестве action принимать не только объекты

@@ -10,8 +10,9 @@
 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { heroCreate } from "../../actions";
+// import { heroCreate } from "../../actions";
 import { useHttp } from "../../hooks/http.hook";
+import { heroCreated } from "../heroesList/heroesSlice";
 import {v4 as uuidv4} from 'uuid'
 
 const HeroesAddForm = () => {
@@ -38,7 +39,7 @@ const HeroesAddForm = () => {
         // ТОЛЬКО если запрос успешен - отправляем персонажа в store
         request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero))
             .then(res => console.log(res, 'Good'))
-            .then(dispatch(heroCreate(newHero)))
+            .then(dispatch(heroCreated(newHero)))
             .catch(error => console.log(error))
 
         // Очищаем форму после отправки
