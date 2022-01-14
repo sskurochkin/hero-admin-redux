@@ -1,9 +1,9 @@
-import {useHttp} from '../../hooks/http.hook';
+// import {useHttp} from '../../hooks/http.hook';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { filtersChanged } from './filtersSlice';
-import { fetchFilters } from '../../actions';
+import { filtersChanged, fetchFilters } from './filtersSlice';
+// import { fetchFilters } from '../../actions';
 import Spinner from '../spinner/Spinner';
 
 // Задача для этого компонента:
@@ -15,12 +15,12 @@ const HeroesFilters = () => {
 
     const {filters, filtersLoadingStatus, activeFilter} = useSelector(state => state.filters);
     const dispatch = useDispatch();
-    const {request} = useHttp();
+    // const {request} = useHttp();
 
     // Запрос на сервер для получения фильтров и последовательной смены состояния
     //redux-thunk используетсвя для того чтобы передавать в диспатч функции и их обрабатывать
     useEffect(() => {
-        dispatch(fetchFilters(request));
+        dispatch(fetchFilters());
             // eslint-disable-next-line
     }, []);
     // useEffect(() => {

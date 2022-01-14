@@ -1,21 +1,21 @@
 // import { createAction } from "@reduxjs/toolkit";
-import { heroesFetched, heroesFetching,heroesFetchingError } from "../components/heroesList/heroesSlice";
-import { filtersFetching, filtersFetched, filtersFetchingError } from "../components/heroesFilters/filtersSlice";
+// import { heroesFetched, heroesFetching,heroesFetchingError } from "../components/heroesList/heroesSlice";
+// import { filtersFetching, filtersFetched, filtersFetchingError } from "../components/heroesFilters/filtersSlice";
 
 //redux-thunk используетсвя для того чтобы передавать в диспатч функции и их обрабатывать
-export const fetchHeroes = (request) => (dispatch) => {
-	dispatch(heroesFetching()); //выполняем запрос на сервер, меняем статус загрузки
-	request("http://localhost:3001/heroes")
-		.then((data) => dispatch(heroesFetched(data))) //получаем героев с сервера, меняем статус загрузки
-		.catch(() => dispatch(heroesFetchingError()));
-};
+// export const fetchHeroes = (request) => (dispatch) => {
+// 	dispatch(heroesFetching()); //выполняем запрос на сервер, меняем статус загрузки
+// 	request("http://localhost:3001/heroes")
+// 		.then((data) => dispatch(heroesFetched(data))) //получаем героев с сервера, меняем статус загрузки
+// 		.catch(() => dispatch(heroesFetchingError()));
+// };
 
-export const fetchFilters = (request) => (dispatch) => {
-	dispatch(filtersFetching());
-	request("http://localhost:3001/filters")
-		.then((data) => dispatch(filtersFetched(data)))
-		.catch(() => dispatch(filtersFetchingError()));
-};
+// export const fetchFilters = (request) => (dispatch) => {
+// 	dispatch(filtersFetching());
+// 	request("http://localhost:3001/filters")
+// 		.then((data) => dispatch(filtersFetched(data)))
+// 		.catch(() => dispatch(filtersFetchingError()));
+// };
 
 // export const heroesFetching = () => {
 // 	return {
