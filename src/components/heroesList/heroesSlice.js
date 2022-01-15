@@ -1,17 +1,28 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+	createSlice,
+	createAsyncThunk,
+	createEntityAdapter,
+	createSelector
+} from "@reduxjs/toolkit";
 import { useHttp } from "../../hooks/http.hook";
 
-const initialState = {
-	heroes: [],
-	heroesLoadingStatus: "idle",
-};
+// const initialState = {
+// 	heroes: [],
+// 	heroesLoadingStatus: "idle",
+// };
+
+const heroesAdapter = createEntityAdapter() //используется для оптимизации
+
+const initialState = heroesAdapter.getInitialState({//начальное состояние
+	heroesLoadingStatus: 'idle'
+})
 
 export const fetchHeroes = createAsyncThunk(
 	"heroes/fetchHeroes", //имя среза/тип действия
-	() => {
+	async () => {
 		//функция payloadCreator принимает 2 арг: то, что приходит при диспатче этоого действия, Thunk API
 		const { request } = useHttp();
-		return request("http://localhost:3001/heroes"); // возвращаем промис
+		return await request("http://localhost:3001/heroes"); // возвращаем промис
 	}
 );
 
@@ -20,12 +31,10 @@ const heroesSlice = createSlice({
 	initialState,
 	reducers: {
 		heroCreated: (state, action) => {
-			state.heroes.push(action.payload);
+			heroesAdapter.addOne(state, action.payload)
 		},
 		heroDeleted: (state, action) => {
-			state.heroes = state.heroes.filter(
-				(item) => item.id !== action.payload
-			);
+			heroesAdapter.removeOne(state, action.payload)
 		},
 	},
 	extraReducers: (builder) => {
@@ -35,7 +44,7 @@ const heroesSlice = createSlice({
 			})
 			.addCase(fetchHeroes.fulfilled, (state, action) => {
 				state.heroesLoadingStatus = "idle";
-				state.heroes = action.payload;
+				heroesAdapter.setAll(state, action.payload)
 			})
 			.addCase(fetchHeroes.rejected, (state) => {
 				state.heroesLoadingStatus = "error";
@@ -47,7 +56,20 @@ const heroesSlice = createSlice({
 const { actions, reducer } = heroesSlice;
 
 export default reducer;
-export const {
-	heroCreated,
-	heroDeleted,
-} = actions;
+
+const {selectAll} = heroesAdapter.getSelectors(state => state.heroes) //преобразование в массив
+
+//работа с двумяредьюсерами с помощью библиотеки reselect. Для предотвращения лишних рендеров, если стейт не меняется
+export const filteredHeroesSelector = createSelector(
+	(state) => state.filters.activeFilter,
+	selectAll,
+	(filter, heroes) => {
+		if (filter === "all") {
+			return heroes;
+		} else {
+			return heroes.filter((hero) => hero.element === filter);
+		}
+	}
+);
+
+export const { heroCreated, heroDeleted } = actions;

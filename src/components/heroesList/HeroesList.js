@@ -1,8 +1,7 @@
 import { useHttp } from "../../hooks/http.hook";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createSelector } from '@reduxjs/toolkit';
-import { fetchHeroes} from "./heroesSlice";
+import { fetchHeroes,  filteredHeroesSelector } from "./heroesSlice";
 // import { fetchHeroes } from "../../actions";
 import { heroDeleted } from "./heroesSlice";
 import HeroesListItem from "../heroesListItem/HeroesListItem";
@@ -14,18 +13,7 @@ import Spinner from "../spinner/Spinner";
 // Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
-	//работа с двумяредьюсерами с помощью библиотеки reselect. Для предотвращения лишних рендеров, если стейт не меняется
-	const filteredHeroesSelector = createSelector(
-		(state) => state.filters.activeFilter,
-		(state) => state.heroes.heroes,
-		(filter, heroes) => {
-			if (filter === "all") {
-				return heroes;
-			} else {
-				return heroes.filter((hero) => hero.element === filter);
-			}
-		}
-	);
+	
 
 	//продвинутый вариант реализации фильтров
 
@@ -40,7 +28,7 @@ const HeroesList = () => {
 
 	const filteredHeroes = useSelector(filteredHeroesSelector);
 	const heroesLoadingStatus = useSelector(
-		(state) => state.filters.heroesLoadingStatus
+		(state) => state.heroes.heroesLoadingStatus
 	);
 
 	// const { filteredHeroes, heroesLoadingStatus } = useSelector((state) => state); //достали занчения из стейта
@@ -48,7 +36,7 @@ const HeroesList = () => {
 	const { request } = useHttp();
 
 	useEffect(() => {
-		dispatch(fetchHeroes()); 
+		dispatch(fetchHeroes());
 		// eslint-disable-next-line
 	}, []);
 	// useEffect(() => {

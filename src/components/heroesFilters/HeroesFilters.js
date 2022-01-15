@@ -1,10 +1,11 @@
-// import {useHttp} from '../../hooks/http.hook';
+import {useHttp} from '../../hooks/http.hook';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { filtersChanged, fetchFilters } from './filtersSlice';
+import { filtersChanged, fetchFilters, selectAll } from './filtersSlice';
 // import { fetchFilters } from '../../actions';
 import Spinner from '../spinner/Spinner';
+import store from '../../store'
 
 // Задача для этого компонента:
 // Фильтры должны формироваться на основании загруженных данных
@@ -13,14 +14,15 @@ import Spinner from '../spinner/Spinner';
 
 const HeroesFilters = () => {
 
-    const {filters, filtersLoadingStatus, activeFilter} = useSelector(state => state.filters);
+    const {filtersLoadingStatus, activeFilter} = useSelector(state => state.filters);
+    const filters = selectAll(store.getState())
     const dispatch = useDispatch();
-    // const {request} = useHttp();
+    const {request} = useHttp();
 
     // Запрос на сервер для получения фильтров и последовательной смены состояния
     //redux-thunk используетсвя для того чтобы передавать в диспатч функции и их обрабатывать
     useEffect(() => {
-        dispatch(fetchFilters());
+        dispatch(fetchFilters(request));
             // eslint-disable-next-line
     }, []);
     // useEffect(() => {
