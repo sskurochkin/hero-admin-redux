@@ -1,55 +1,38 @@
-// Задача для этого компонента:
-// Реализовать создание нового героя с введенными данными. Он должен попадать
-// в общее состояние и отображаться в списке + фильтроваться
-// Уникальный идентификатор персонажа можно сгенерировать через uiid
-// Усложненная задача:
-// Персонаж создается и в файле json при помощи метода POST
-// Дополнительно:
-// Элементы <option></option> желательно сформировать на базе
-// данных из фильтров
-
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-// import { heroCreate } from "../../actions";
-import { useHttp } from "../../hooks/http.hook";
-import { heroCreated } from "../heroesList/heroesSlice";
+import {  useSelector } from "react-redux";
 import { selectAll } from "../heroesFilters/filtersSlice";
+import { useCreateHeroMutation } from "../../api/apiSlice";
 import store from "../../store";
-import {v4 as uuidv4} from 'uuid'
+import { v4 as uuidv4 } from "uuid";
 
 const HeroesAddForm = () => {
-
 	//создаем локальный стейт для формирования объекта героя
 	const [heroName, setHeroName] = useState("");
 	const [heroDescr, setHeroDescr] = useState("");
 	const [heroElement, setHeroElement] = useState("");
 
-	const dispatch = useDispatch();
-	const { request } = useHttp();
+	const [createHero, { isLoading }] = useCreateHeroMutation(); // возвращает массив
+
 	const { filtersLoadingStatus } = useSelector((state) => state.filters);
-    const filters = selectAll(store.getState())
+	const filters = selectAll(store.getState());
 
 	const onSubmitHandler = (e) => {
-        e.preventDefault()
+		e.preventDefault();
 
-        const newHero = {
-            id: uuidv4(),
-            name: heroName,
-            description: heroDescr,
-            element: heroElement
-        }
-        // Отправляем данные на сервер в формате JSON
-        // ТОЛЬКО если запрос успешен - отправляем персонажа в store
-        request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero))
-            .then(res => console.log(res, 'Good'))
-            .then(dispatch(heroCreated(newHero)))
-            .catch(error => console.log(error))
+		const newHero = {
+			id: uuidv4(),
+			name: heroName,
+			description: heroDescr,
+			element: heroElement,
+		};
 
-        // Очищаем форму после отправки
-        setHeroName('');
-        setHeroDescr('');
-        setHeroElement('');
-    };
+		createHero(newHero).unwrap();
+
+		// Очищаем форму после отправки
+		setHeroName("");
+		setHeroDescr("");
+		setHeroElement("");
+	};
 
 	const renderFilters = (filters, status) => {
 		if (status === "loading") {
@@ -75,9 +58,9 @@ const HeroesAddForm = () => {
 	};
 
 	return (
-		<form 
-            onSubmit={onSubmitHandler}
-            className='border p-4 shadow-lg rounded'>
+		<form
+			onSubmit={onSubmitHandler}
+			className='border p-4 shadow-lg rounded'>
 			<div className='mb-3'>
 				<label htmlFor='name' className='form-label fs-4'>
 					Имя нового героя
